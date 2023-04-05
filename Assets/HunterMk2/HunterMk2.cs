@@ -8,7 +8,8 @@ public class HunterMk2 : MonoBehaviour
     // Just initializing some variables first! 
     public float passiveSpeed = 4;
     public float activeSpeed = 7;
-    
+    public List<RaycastHit> rayCastInformation = new List<RaycastHit>();
+
     //Detection stuff:
     public float detectionRad = 5;
     public float detectionAng = 90;
@@ -28,7 +29,8 @@ public class HunterMk2 : MonoBehaviour
     }
 
     // // Update is called once per frame
-    void Update(){
+    public List<RaycastHit> Update(){
+        List<RaycastHit> rayCastInformation = new List<RaycastHit> {};
         RaycastHit rayInfo;
         // send out a ray into the world just going forward endlessly.
         // At some point I would love to modify this so that it sends out multiple rays
@@ -53,19 +55,23 @@ public class HunterMk2 : MonoBehaviour
                     else if (rayInfo.collider.gameObject.tag == "Player"){
                         Debug.DrawLine(transform.position, rayInfo.point, Color.red);}
                 } else { Debug.DrawLine(transform.position,endPoint,Color.white);}
-            
             }
+
             //Write something so that if a player is detected, the hunter moves to the last known place
             //the player was detected, which can be updated or it could also try and intercept the player
             // based on the velocity of the player at the moment that it sees the player. 
+
+            // This idea has been scrapped so that I can return the list of values so that it can be used in another 
+            rayCastInformation.Add (rayInfo);
+
         }
+        //This returns the information from the list at the end of ever for loop. 
+        return(rayCastInformation);
     }
     void FixedUpdate(){
         rigidBody.position = transform.position;
-
         //Setup collisions so that if the hunter touches the player 
         //destroy the player object. 
-
     }
     void OnCollisionEnter (Collision collision){
         print(collision.gameObject.name);
@@ -79,14 +85,9 @@ public class HunterMk2 : MonoBehaviour
 
             if (Physics.Raycast(newDir, out collisionHit)){
                 directionVec = -(collisionHit.normal);
-                
             }
         }
         }
     }
-
-
-
+    
 }
-
-
