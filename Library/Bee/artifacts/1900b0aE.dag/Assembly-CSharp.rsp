@@ -348,7 +348,7 @@
 "Assets/CreateCustomMesh.cs"
 "Assets/Hunter.cs"
 "Assets/HunterMk2/HunterMk2.cs"
-"Assets/HunterMk2/Movement.cs"
+"Assets/HunterMk2/hunterMovement.cs"
 "Assets/Movement.cs"
 "Assets/Player/Camera_cont.cs"
 "Assets/PlayerV2/Controller.cs"

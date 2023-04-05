@@ -40,9 +40,9 @@
      <Compile Include="Assets\HunterMk2\HunterMk2.cs" />
      <Compile Include="Assets\Hunter.cs" />
      <Compile Include="Assets\CreateCustomMesh.cs" />
+     <Compile Include="Assets\HunterMk2\hunterMovement.cs" />
      <Compile Include="Assets\Movement.cs" />
      <Compile Include="Assets\Player\Camera_cont.cs" />
-     <Compile Include="Assets\HunterMk2\Movement.cs" />
     <Reference Include="UnityEngine">
         <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.20f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

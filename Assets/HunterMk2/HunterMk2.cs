@@ -8,7 +8,6 @@ public class HunterMk2 : MonoBehaviour
     // Just initializing some variables first! 
     public float passiveSpeed = 4;
     public float activeSpeed = 7;
-    public List<RaycastHit> rayCastInformation = new List<RaycastHit>();
 
     //Detection stuff:
     public float detectionRad = 5;
@@ -19,28 +18,32 @@ public class HunterMk2 : MonoBehaviour
     Vector3 directionVec;
     float detectionDistance;
     Rigidbody rigidBody;
-
+    public List<RaycastHit> hunterLookList = new List<RaycastHit>();
 
     // Call the stuff we need before the game starts
 
-    void Start(){
 
+    void Start(){
         rigidBody = GetComponent<Rigidbody> ();
     }
 
-    // // Update is called once per frame
-    public List<RaycastHit> Update(){
-        List<RaycastHit> rayCastInformation = new List<RaycastHit> {};
+// Update method!!
+    private void Update() {
+        hunterLookRoutine();
+    }
+
+    public List<RaycastHit> hunterLookRoutine(){
         RaycastHit rayInfo;
         // send out a ray into the world just going forward endlessly.
         // At some point I would love to modify this so that it sends out multiple rays
         // These would then be used to look for object and for the player. 
-        for (int i = 0; i*detectionInt <= detectionAng; i++){
+        for (int i = 0; i * detectionInt <= detectionAng; i++){
             
             // For every degree in a set angle cast a ray and return the value to rayInfo.
             float localAngle = detectionInt * i;
             Quaternion rayDirection = Quaternion.Euler(0f,localAngle, 0f);
             Ray hunterRay = new Ray(transform.position, rayDirection*transform.forward);
+
 
             if(Physics.Raycast(hunterRay , out rayInfo)) {
                 // sets a distance to check to and then sees if that's further than 
@@ -48,25 +51,36 @@ public class HunterMk2 : MonoBehaviour
                 detectionDistance = Mathf.Min(rayInfo.distance,detectionRad);
                 Vector3 endPoint = hunterRay.GetPoint(detectionDistance);
                 if (rayInfo.distance <= detectionRad){
-                
-                // Colors rays based on what the ray hits.
-                    if (rayInfo.collider.gameObject.tag == "Terrain"){
+ 
+                    if (rayInfo.collider.gameObject.tag == "Terrain" ){
                         Debug.DrawLine(transform.position, rayInfo.point, Color.cyan);}
+                        Vector3 objectNormal = rayInfo.normal;
+                        Debug.DrawLine(rayInfo.collider.transform.position, objectNormal, Color.green);
+                        hunterLookList.Add (rayInfo);
+                        
+                        if (rayInfo.collider.gameObject.tag == "Terrain" && (rayInfo.distance < 3)){
+                    //terrainAvoidance();
+                        directionVec = objectNormal;
+                        }
+                        
                     else if (rayInfo.collider.gameObject.tag == "Player"){
                         Debug.DrawLine(transform.position, rayInfo.point, Color.red);}
-                } else { Debug.DrawLine(transform.position,endPoint,Color.white);}
+
+                } else { Debug.DrawLine(transform.position,endPoint,Color.white);
+                
+                }
             }
+            // This idea has been scrapped so that I can return the list of values so that it can be used in another 
 
             //Write something so that if a player is detected, the hunter moves to the last known place
             //the player was detected, which can be updated or it could also try and intercept the player
             // based on the velocity of the player at the moment that it sees the player. 
 
-            // This idea has been scrapped so that I can return the list of values so that it can be used in another 
-            rayCastInformation.Add (rayInfo);
-
         }
+
+
         //This returns the information from the list at the end of ever for loop. 
-        return(rayCastInformation);
+        return(hunterLookList);
     }
     void FixedUpdate(){
         rigidBody.position = transform.position;
