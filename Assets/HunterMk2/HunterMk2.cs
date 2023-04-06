@@ -10,9 +10,9 @@ public class HunterMk2 : MonoBehaviour
     public float activeSpeed = 7;
 
     //Detection stuff:
-    public float detectionRad = 5;
-    public float detectionAng = 90;
-    public int detectionInt = 1;
+    public float detectionRad = 15;
+    public float detectionAng = 80;
+    public int detectionInt = 2;
     public int numOfDetectionRays = 90;
 
     Vector3 directionVec;
@@ -40,8 +40,8 @@ public class HunterMk2 : MonoBehaviour
         for (int i = 0; i * detectionInt <= detectionAng; i++){
             
             // For every degree in a set angle cast a ray and return the value to rayInfo.
-            float localAngle = detectionInt * i;
-            Quaternion rayDirection = Quaternion.Euler(0f,localAngle, 0f);
+            float localAngle = Mathf.Pow(-1,i)*(detectionInt * i);
+            Quaternion rayDirection = Quaternion.Euler(0f, localAngle, 0f);
             Ray hunterRay = new Ray(transform.position, rayDirection*transform.forward);
 
 
@@ -50,23 +50,30 @@ public class HunterMk2 : MonoBehaviour
                 // the detection radius. 
                 detectionDistance = Mathf.Min(rayInfo.distance,detectionRad);
                 Vector3 endPoint = hunterRay.GetPoint(detectionDistance);
+
                 if (rayInfo.distance <= detectionRad){
  
                     if (rayInfo.collider.gameObject.tag == "Terrain" ){
                         Debug.DrawLine(transform.position, rayInfo.point, Color.cyan);}
+
                         Vector3 objectNormal = rayInfo.normal;
-                        Debug.DrawLine(rayInfo.collider.transform.position, objectNormal, Color.green);
-                        hunterLookList.Add (rayInfo);
+                        Vector3 reflectionDir = Vector3.Reflect(hunterRay.direction ,objectNormal);
+                        // Ray reflectedRay = new Ray(rayInfo.point, reflectionDir);
+                        Debug.DrawLine(rayInfo.point, rayInfo.point + reflectionDir * 3,Color.green);
+
                         
                         if (rayInfo.collider.gameObject.tag == "Terrain" && (rayInfo.distance < 3)){
                     //terrainAvoidance();
-                        directionVec = objectNormal;
+
                         }
                         
                     else if (rayInfo.collider.gameObject.tag == "Player"){
+                        activeMovement();
                         Debug.DrawLine(transform.position, rayInfo.point, Color.red);}
 
-                } else { Debug.DrawLine(transform.position,endPoint,Color.white);
+                } else { 
+                    Debug.DrawLine(transform.position,endPoint,Color.white);
+                    passiveMovement();
                 
                 }
             }
@@ -103,5 +110,10 @@ public class HunterMk2 : MonoBehaviour
         }
         }
     }
-    
+    void passiveMovement(){
+        // Vector3 passiveDir = 
+    }
+    void activeMovement(){
+        
+    }
 }

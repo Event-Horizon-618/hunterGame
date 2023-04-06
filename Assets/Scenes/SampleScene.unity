@@ -613,9 +613,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passiveSpeed: 4
   activeSpeed: 7
-  detectionRad: 5
-  detectionAng: 90
-  detectionInt: 4
+  detectionRad: 15
+  detectionAng: 80
+  detectionInt: 2
   numOfDetectionRays: 90
 --- !u!54 &377927805
 Rigidbody:
