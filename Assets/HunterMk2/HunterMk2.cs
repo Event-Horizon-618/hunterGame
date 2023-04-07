@@ -66,7 +66,7 @@ public class HunterMk2 : MonoBehaviour
                         //TerrainAvoidance();
                     
                     } else if (rayInfo.collider.gameObject.tag == "Player"){
-                        Debug.DrawLine(transform.position, rayInfo.point * 3, Color.red);
+                        Debug.DrawLine(transform.position, rayInfo.point , Color.red);
                         activeMovement();
                         }
 
@@ -116,6 +116,7 @@ public class HunterMk2 : MonoBehaviour
         hunterVelocity = directionVec * passiveSpeed;
         rigidBody.position += hunterVelocity * Time.fixedDeltaTime;
     }
+
     void activeMovement(){
         
     }
