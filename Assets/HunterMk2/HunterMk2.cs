@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-   
+using Random = UnityEngine.Random;
 
 public class HunterMk2 : MonoBehaviour
 {
@@ -14,9 +14,11 @@ public class HunterMk2 : MonoBehaviour
     public float detectionAng = 80;
     public int detectionInt = 2;
     public int numOfDetectionRays = 90;
-
-    Vector3 directionVec;
     float detectionDistance;
+    
+    Vector3 directionVec;
+    Vector3 hunterVelocity;
+    
     Rigidbody rigidBody;
     public List<RaycastHit> hunterLookList = new List<RaycastHit>();
 
@@ -53,23 +55,20 @@ public class HunterMk2 : MonoBehaviour
 
                 if (rayInfo.distance <= detectionRad){
  
-                    if (rayInfo.collider.gameObject.tag == "Terrain" ){
-                        Debug.DrawLine(transform.position, rayInfo.point, Color.cyan);}
+                    if (rayInfo.collider.gameObject.tag == "Terrain" && (rayInfo.distance < 3)) {
+                        Debug.DrawLine(transform.position, rayInfo.point, Color.cyan);
 
                         Vector3 objectNormal = rayInfo.normal;
                         Vector3 reflectionDir = Vector3.Reflect(hunterRay.direction ,objectNormal);
                         // Ray reflectedRay = new Ray(rayInfo.point, reflectionDir);
-                        Debug.DrawLine(rayInfo.point, rayInfo.point + reflectionDir * 3,Color.green);
+                        Debug.DrawLine(rayInfo.point, rayInfo.point + reflectionDir, Color.green);
 
-                        
-                        if (rayInfo.collider.gameObject.tag == "Terrain" && (rayInfo.distance < 3)){
-                    //terrainAvoidance();
-
-                        }
-                        
-                    else if (rayInfo.collider.gameObject.tag == "Player"){
+                        //TerrainAvoidance();
+                    
+                    } else if (rayInfo.collider.gameObject.tag == "Player"){
+                        Debug.DrawLine(transform.position, rayInfo.point * 3, Color.red);
                         activeMovement();
-                        Debug.DrawLine(transform.position, rayInfo.point, Color.red);}
+                        }
 
                 } else { 
                     Debug.DrawLine(transform.position,endPoint,Color.white);
@@ -111,7 +110,11 @@ public class HunterMk2 : MonoBehaviour
         }
     }
     void passiveMovement(){
-        // Vector3 passiveDir = 
+        // Pick a random movement direction and move the hunter in that direction.
+        Quaternion wanderAngle = Quaternion.Euler(0f,0f,Random.Range(-80,80)); 
+        Vector3 directionVec = transform.rotation * wanderAngle * Vector3.forward;
+        hunterVelocity = directionVec * passiveSpeed;
+        rigidBody.position += hunterVelocity * Time.fixedDeltaTime;
     }
     void activeMovement(){
         
